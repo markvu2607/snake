@@ -1,5 +1,5 @@
-.App {
-
+:root {
+  --pointSize: 8px;
 }
 
 .App__row {

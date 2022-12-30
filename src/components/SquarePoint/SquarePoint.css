@@ -1,7 +1,3 @@
-:root {
-  --pointSize: 8px;
-}
-
 .square-point {
   width: var(--pointSize);
   height: var(--pointSize);
