@@ -1,3 +1,4 @@
 import { initBasicScreenMatrix, initSnakeMatrix } from "./initValue";
+import KeyboardCode from "./keyboardCode";
 
-export { initBasicScreenMatrix, initSnakeMatrix };
+export { initBasicScreenMatrix, initSnakeMatrix, KeyboardCode };

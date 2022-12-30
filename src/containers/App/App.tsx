@@ -8,17 +8,16 @@ import { initBasicScreenMatrix } from "../../constants";
 import "./App.css";
 
 function App() {
-  const [snakeMatrix, setSnakeMatrix] = useSnake();
+  const snakeMatrix = useSnake();
 
   const [screenMatrix, setScreenMatrix] = useState<Array<Array<number>>>(
     addTwoMatrices(initBasicScreenMatrix, snakeMatrix)
   );
 
+  //change screen when snake move
   useEffect(() => {
-    setInterval(() => {
-      console.log("refresh screen");
-    }, 1000);
-  }, []);
+    setScreenMatrix(addTwoMatrices(snakeMatrix, initBasicScreenMatrix));
+  }, [snakeMatrix]);
 
   return (
     <div className="App">
