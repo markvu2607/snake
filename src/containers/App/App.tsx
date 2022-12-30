@@ -9,8 +9,10 @@ import { TCoordinate } from "../../types";
 import "./App.css";
 
 function App() {
-  const { snakeCoordinates, getNextCoordinate, run, eat } = useSnake();
-  const [screenMatrix, setScreenMatrix] = useState<Array<Array<number>>>([]);
+  const { snakeCoordinates, getNextCoordinate, run, eat } = useSnake(
+    cloneMatrix(baseScreenMatrix.BASIC)
+  );
+  const [screenMatrix, setScreenMatrix] = useState<number[][]>([]);
 
   const renderSnake = (snakeCoordinates: TCoordinate[]) => {
     const baseScreen = cloneMatrix(baseScreenMatrix.BASIC);

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { initSnakeCoordinates, KeyboardCode } from "../constants";
 import { TCoordinate } from "../types";
 
-function useSnake(): {
+function useSnake(matrix: number[][]): {
   snakeCoordinates: TCoordinate[];
   getNextCoordinate: () => TCoordinate;
   run: () => void;
@@ -29,13 +29,21 @@ function useSnake(): {
       snakeCoordinates[snakeCoordinates.length - 1];
     switch (direction) {
       case "up":
-        return { ...headOfSnake, y: headOfSnake.y - 1 };
+        return headOfSnake.y - 1 < 0
+          ? { ...headOfSnake, y: matrix.length - 1 }
+          : { ...headOfSnake, y: headOfSnake.y - 1 };
       case "down":
-        return { ...headOfSnake, y: headOfSnake.y + 1 };
+        return headOfSnake.y + 1 >= matrix.length
+          ? { ...headOfSnake, y: 0 }
+          : { ...headOfSnake, y: headOfSnake.y + 1 };
       case "left":
-        return { ...headOfSnake, x: headOfSnake.x - 1 };
+        return headOfSnake.x - 1 < 0
+          ? { ...headOfSnake, x: matrix[0].length - 1 }
+          : { ...headOfSnake, x: headOfSnake.x - 1 };
       case "right":
-        return { ...headOfSnake, x: headOfSnake.x + 1 };
+        return headOfSnake.x + 1 >= matrix[0].length
+          ? { ...headOfSnake, x: 0 }
+          : { ...headOfSnake, x: headOfSnake.x + 1 };
     }
   };
 
