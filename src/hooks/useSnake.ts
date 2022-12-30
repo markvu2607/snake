@@ -1,22 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { initSnakeMatrix, KeyboardCode } from "../constants";
+import { useEffect, useState } from "react";
+import { initSnakeCoordinates, KeyboardCode } from "../constants";
+import { TCoordinate } from "../types";
 
-function useSnake(): number[][] {
-  const [snakeMatrix, setSnakeMatrix] = useState<number[][]>(initSnakeMatrix);
+function useSnake(): {
+  snakeCoordinates: TCoordinate[];
+  getNextCoordinate: () => TCoordinate;
+  run: () => void;
+  eat: () => void;
+} {
+  const [snakeCoordinates, setSnakeCoordinates] =
+    useState<TCoordinate[]>(initSnakeCoordinates);
 
   const [direction, setDirection] = useState<"up" | "down" | "left" | "right">(
     "right"
   );
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      console.log(direction);
-    }, 1000);
+  const run = (): void => {
+    setSnakeCoordinates((preState) => {
+      const newState = preState.slice(1);
+      return [...newState, getNextCoordinate()];
+    });
+  };
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [direction]);
+  const eat = (): void => {};
+
+  const getNextCoordinate = (): TCoordinate => {
+    const headOfSnake: TCoordinate =
+      snakeCoordinates[snakeCoordinates.length - 1];
+    switch (direction) {
+      case "up":
+        return { ...headOfSnake, y: headOfSnake.y - 1 };
+      case "down":
+        return { ...headOfSnake, y: headOfSnake.y + 1 };
+      case "left":
+        return { ...headOfSnake, x: headOfSnake.x - 1 };
+      case "right":
+        return { ...headOfSnake, x: headOfSnake.x + 1 };
+    }
+  };
 
   // add event listener control snake
   useEffect(() => {
@@ -58,7 +79,7 @@ function useSnake(): number[][] {
     };
   }, []);
 
-  return snakeMatrix;
+  return { snakeCoordinates, getNextCoordinate, run, eat };
 }
 
 export default useSnake;

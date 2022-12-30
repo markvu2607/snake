@@ -1,3 +1,3 @@
-import { addTwoMatrices } from "./matrix";
+import { cloneMatrix } from "./matrix";
 
-export { addTwoMatrices };
+export { cloneMatrix };

@@ -2,22 +2,49 @@ import React, { useState, useEffect } from "react";
 
 import SquarePoint from "../../components/SquarePoint";
 import { useSnake } from "../../hooks";
+import { cloneMatrix } from "../../utils";
 
-import { addTwoMatrices } from "../../utils";
-import { initBasicScreenMatrix } from "../../constants";
+import { baseScreenMatrix, ESpeeds } from "../../constants";
+import { TCoordinate } from "../../types";
 import "./App.css";
 
 function App() {
-  const snakeMatrix = useSnake();
+  const { snakeCoordinates, getNextCoordinate, run, eat } = useSnake();
+  const [screenMatrix, setScreenMatrix] = useState<Array<Array<number>>>([]);
 
-  const [screenMatrix, setScreenMatrix] = useState<Array<Array<number>>>(
-    addTwoMatrices(initBasicScreenMatrix, snakeMatrix)
-  );
+  const renderSnake = (snakeCoordinates: TCoordinate[]) => {
+    const baseScreen = cloneMatrix(baseScreenMatrix.BASIC);
+    snakeCoordinates.forEach((coordinate: TCoordinate) => {
+      baseScreen[coordinate.y][coordinate.x] = 1;
+    });
+
+    return baseScreen;
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const nextCoordinate = getNextCoordinate();
+      const isBody = snakeCoordinates.find(
+        (coordinate: TCoordinate) =>
+          JSON.stringify(coordinate) === JSON.stringify(nextCoordinate)
+      );
+      const isFood = false;
+      const isRun = !isBody && !isFood;
+      if (isRun) {
+        run();
+      }
+    }, ESpeeds.EASY);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [run, getNextCoordinate, snakeCoordinates]);
 
   //change screen when snake move
   useEffect(() => {
-    setScreenMatrix(addTwoMatrices(snakeMatrix, initBasicScreenMatrix));
-  }, [snakeMatrix]);
+    const matrixRenderSnake = renderSnake(snakeCoordinates);
+    setScreenMatrix(matrixRenderSnake);
+  }, [snakeCoordinates]);
 
   return (
     <div className="App">

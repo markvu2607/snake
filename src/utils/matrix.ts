@@ -1,12 +1,12 @@
-export const addTwoMatrices = (
-  matrix1: Array<Array<number>>,
-  matrix2: Array<Array<number>>
-) => {
-  const matrix1Clone = [...matrix1];
-  for (let i = 0; i < matrix1.length; i++) {
-    for (let j = 0; j < matrix1[i].length; j++) {
-      matrix1Clone[i][j] += matrix2[i][j];
+export const cloneMatrix = (matrix: Array<Array<number>>) => {
+  const clone: Array<Array<number>> = [];
+  for (let i = 0; i < matrix.length; i++) {
+    let rowClone = [];
+    for (let j = 0; j < matrix[i].length; j++) {
+      rowClone.push(matrix[i][j]);
     }
+    clone.push(rowClone);
   }
-  return matrix1Clone;
+
+  return clone;
 };
