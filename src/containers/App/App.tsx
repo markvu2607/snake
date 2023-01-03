@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 
 import SquarePoint from "../../components/SquarePoint";
 import { useSnake } from "../../hooks";
-import { cloneMatrix } from "../../utils";
+import { cloneMatrix, randomUnder } from "../../utils";
 
-import { baseScreenMatrix, ESpeeds } from "../../constants";
+import { baseScreenMatrix, EPointValues, ESpeeds } from "../../constants";
 import { TCoordinate } from "../../types";
 import "./App.css";
 
@@ -12,15 +12,34 @@ function App() {
   const { snakeCoordinates, getNextCoordinate, run, eat } = useSnake(
     cloneMatrix(baseScreenMatrix.BASIC)
   );
+  const [foodCoordinate, setFoodCoordinate] = useState<TCoordinate>(() => {
+    while (true) {
+      const randomCoordinate = {
+        x: randomUnder(baseScreenMatrix.BASIC[0].length - 1),
+        y: randomUnder(baseScreenMatrix.BASIC.length - 1),
+      };
+
+      const isFindInsideSnake = snakeCoordinates.findIndex(
+        (coordinate: TCoordinate) =>
+          JSON.stringify(coordinate) === JSON.stringify(randomCoordinate)
+      );
+
+      if (isFindInsideSnake === -1) return randomCoordinate;
+    }
+  });
   const [screenMatrix, setScreenMatrix] = useState<number[][]>([]);
 
-  const renderSnake = (snakeCoordinates: TCoordinate[]) => {
-    const baseScreen = cloneMatrix(baseScreenMatrix.BASIC);
-    snakeCoordinates.forEach((coordinate: TCoordinate) => {
-      baseScreen[coordinate.y][coordinate.x] = 1;
-    });
-
-    return baseScreen;
+  const getColorOfPoint = (point: number) => {
+    switch (point) {
+      case EPointValues.BODY:
+        return "black";
+      case EPointValues.HEAD:
+        return "red";
+      case EPointValues.FOOD:
+        return "green";
+      default:
+        return "white";
+    }
   };
 
   useEffect(() => {
@@ -30,23 +49,61 @@ function App() {
         (coordinate: TCoordinate) =>
           JSON.stringify(coordinate) === JSON.stringify(nextCoordinate)
       );
-      const isFood = false;
+      const isFood =
+        JSON.stringify(foodCoordinate) === JSON.stringify(nextCoordinate);
       const isRun = !isBody && !isFood;
       if (isRun) {
         run();
+      } else if (isFood) {
+        eat();
+        setFoodCoordinate(() => {
+          while (true) {
+            const randomCoordinate = {
+              x: randomUnder(baseScreenMatrix.BASIC[0].length - 1),
+              y: randomUnder(baseScreenMatrix.BASIC.length - 1),
+            };
+
+            const isFindInsideSnake = snakeCoordinates.findIndex(
+              (coordinate: TCoordinate) =>
+                JSON.stringify(coordinate) === JSON.stringify(randomCoordinate)
+            );
+
+            if (isFindInsideSnake === -1) return randomCoordinate;
+          }
+        });
+      } else if (isBody) {
+        console.log("die");
       }
-    }, ESpeeds.EASY);
+    }, ESpeeds.HARD);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [run, getNextCoordinate, snakeCoordinates]);
+  }, [run, getNextCoordinate, eat, foodCoordinate, snakeCoordinates]);
 
   //change screen when snake move
   useEffect(() => {
-    const matrixRenderSnake = renderSnake(snakeCoordinates);
-    setScreenMatrix(matrixRenderSnake);
-  }, [snakeCoordinates]);
+    const renderScreen = (snakeCoordinates: TCoordinate[]) => {
+      const baseScreen = cloneMatrix(baseScreenMatrix.BASIC);
+
+      // Render snake
+      snakeCoordinates.forEach((coordinate: TCoordinate, index: number) => {
+        if (index !== snakeCoordinates.length - 1) {
+          baseScreen[coordinate.y][coordinate.x] = 1;
+        } else {
+          baseScreen[coordinate.y][coordinate.x] = 2;
+        }
+      });
+
+      // Render food
+      baseScreen[foodCoordinate.y][foodCoordinate.x] = 3;
+
+      return baseScreen;
+    };
+
+    const matrixRenderScreen = renderScreen(snakeCoordinates);
+    setScreenMatrix(matrixRenderScreen);
+  }, [snakeCoordinates, foodCoordinate]);
 
   return (
     <div className="App">
@@ -54,10 +111,7 @@ function App() {
         return (
           <div className="App__row" key={index}>
             {row.map((point: number, index: number) => (
-              <SquarePoint
-                key={index}
-                color={point === 1 ? "black" : "white"}
-              />
+              <SquarePoint key={index} color={getColorOfPoint(point)} />
             ))}
           </div>
         );

@@ -1,7 +1,7 @@
 enum ESpeeds {
-  EASY = 500,
-  NORMAL = 300,
-  HARD = 100,
+  EASY = 150,
+  NORMAL = 100,
+  HARD = 70,
 }
 
 export default ESpeeds;

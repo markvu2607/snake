@@ -1,3 +1,4 @@
 import { cloneMatrix } from "./matrix";
+import { randomUnder } from "./util";
 
-export { cloneMatrix };
+export { cloneMatrix, randomUnder };
