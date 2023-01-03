@@ -24,7 +24,12 @@ function useSnake(matrix: number[][]): {
 
   const eat = (): void => {
     setSnakeCoordinates((preState) => {
-      return [...preState, getNextCoordinate()];
+      if (preState.length <= matrix.flat().length - 16) {
+        return [...preState, getNextCoordinate()];
+      } else {
+        const newState = preState.slice(1);
+        return [...newState, getNextCoordinate()];
+      }
     });
   };
 

@@ -56,7 +56,7 @@ function App() {
         run();
       } else if (isFood) {
         eat();
-        setFoodCoordinate(() => {
+        setFoodCoordinate((prevState) => {
           while (true) {
             const randomCoordinate = {
               x: randomUnder(baseScreenMatrix.BASIC[0].length - 1),
@@ -68,13 +68,17 @@ function App() {
                 JSON.stringify(coordinate) === JSON.stringify(randomCoordinate)
             );
 
-            if (isFindInsideSnake === -1) return randomCoordinate;
+            if (
+              isFindInsideSnake === -1 &&
+              JSON.stringify(prevState) !== JSON.stringify(randomCoordinate)
+            )
+              return randomCoordinate;
           }
         });
       } else if (isBody) {
         console.log("die");
       }
-    }, ESpeeds.HARD);
+    }, ESpeeds.EASY);
 
     return () => {
       clearInterval(intervalId);
