@@ -22,7 +22,11 @@ function useSnake(matrix: number[][]): {
     });
   };
 
-  const eat = (): void => {};
+  const eat = (): void => {
+    setSnakeCoordinates((preState) => {
+      return [...preState, getNextCoordinate()];
+    });
+  };
 
   const getNextCoordinate = (): TCoordinate => {
     const headOfSnake: TCoordinate =

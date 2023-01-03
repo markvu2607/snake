@@ -14,3 +14,13 @@
   border: 1px solid black;
   background-color: white;
 }
+
+.red {
+  border: 1px solid white;
+  background-color: red;
+}
+
+.green {
+  border: 1px solid white;
+  background-color: green;
+}
