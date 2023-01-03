@@ -9,7 +9,7 @@ import { TCoordinate } from "../../types";
 import "./App.css";
 
 function App() {
-  const { snakeCoordinates, getNextCoordinate, run, eat } = useSnake(
+  const { snakeCoordinates, getNextCoordinate, run, eat, reset } = useSnake(
     cloneMatrix(baseScreenMatrix.BASIC)
   );
   const [foodCoordinate, setFoodCoordinate] = useState<TCoordinate>(() => {
@@ -19,12 +19,12 @@ function App() {
         y: randomUnder(baseScreenMatrix.BASIC.length - 1),
       };
 
-      const isFindInsideSnake = snakeCoordinates.findIndex(
+      const isFindInsideSnake = snakeCoordinates.find(
         (coordinate: TCoordinate) =>
           JSON.stringify(coordinate) === JSON.stringify(randomCoordinate)
       );
 
-      if (isFindInsideSnake === -1) return randomCoordinate;
+      if (!isFindInsideSnake) return randomCoordinate;
     }
   });
   const [screenMatrix, setScreenMatrix] = useState<number[][]>([]);
@@ -45,10 +45,12 @@ function App() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       const nextCoordinate = getNextCoordinate();
-      const isBody = snakeCoordinates.find(
-        (coordinate: TCoordinate) =>
-          JSON.stringify(coordinate) === JSON.stringify(nextCoordinate)
-      );
+      const isBody = snakeCoordinates
+        .slice(1, snakeCoordinates.length)
+        .find(
+          (coordinate: TCoordinate) =>
+            JSON.stringify(coordinate) === JSON.stringify(nextCoordinate)
+        );
       const isFood =
         JSON.stringify(foodCoordinate) === JSON.stringify(nextCoordinate);
       const isRun = !isBody && !isFood;
@@ -56,30 +58,59 @@ function App() {
         run();
       } else if (isFood) {
         eat();
-        setFoodCoordinate(() => {
+        setFoodCoordinate((prevState) => {
           while (true) {
             const randomCoordinate = {
               x: randomUnder(baseScreenMatrix.BASIC[0].length - 1),
               y: randomUnder(baseScreenMatrix.BASIC.length - 1),
             };
 
-            const isFindInsideSnake = snakeCoordinates.findIndex(
+            const isFindInsideSnake = snakeCoordinates.find(
               (coordinate: TCoordinate) =>
                 JSON.stringify(coordinate) === JSON.stringify(randomCoordinate)
             );
 
-            if (isFindInsideSnake === -1) return randomCoordinate;
+            if (
+              !isFindInsideSnake &&
+              JSON.stringify(prevState) !== JSON.stringify(randomCoordinate)
+            )
+              return randomCoordinate;
           }
         });
       } else if (isBody) {
-        console.log("die");
+        alert("You dead!");
+        clearInterval(intervalId);
+
+        //reset snake
+        reset();
+
+        //reset food
+        setFoodCoordinate((prevState) => {
+          while (true) {
+            const randomCoordinate = {
+              x: randomUnder(baseScreenMatrix.BASIC[0].length - 1),
+              y: randomUnder(baseScreenMatrix.BASIC.length - 1),
+            };
+
+            const isFindInsideSnake = snakeCoordinates.find(
+              (coordinate: TCoordinate) =>
+                JSON.stringify(coordinate) === JSON.stringify(randomCoordinate)
+            );
+
+            if (
+              !isFindInsideSnake &&
+              JSON.stringify(prevState) !== JSON.stringify(randomCoordinate)
+            )
+              return randomCoordinate;
+          }
+        });
       }
     }, ESpeeds.HARD);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [run, getNextCoordinate, eat, foodCoordinate, snakeCoordinates]);
+  }, [run, getNextCoordinate, eat, foodCoordinate, snakeCoordinates, reset]);
 
   //change screen when snake move
   useEffect(() => {
