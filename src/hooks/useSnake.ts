@@ -7,6 +7,7 @@ function useSnake(matrix: number[][]): {
   getNextCoordinate: () => TCoordinate;
   run: () => void;
   eat: () => void;
+  reset: () => void;
 } {
   const [snakeCoordinates, setSnakeCoordinates] =
     useState<TCoordinate[]>(initSnakeCoordinates);
@@ -31,6 +32,11 @@ function useSnake(matrix: number[][]): {
         return [...newState, getNextCoordinate()];
       }
     });
+  };
+
+  const reset = (): void => {
+    setSnakeCoordinates(initSnakeCoordinates);
+    setDirection("right");
   };
 
   const getNextCoordinate = (): TCoordinate => {
@@ -96,7 +102,7 @@ function useSnake(matrix: number[][]): {
     };
   }, []);
 
-  return { snakeCoordinates, getNextCoordinate, run, eat };
+  return { snakeCoordinates, getNextCoordinate, run, eat, reset };
 }
 
 export default useSnake;
