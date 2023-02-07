@@ -137,16 +137,18 @@ function App() {
   }, [snakeCoordinates, foodCoordinate]);
 
   return (
-    <div className="App">
-      {screenMatrix.map((row: Array<number>, index: number) => {
-        return (
-          <div className="App__row" key={index}>
-            {row.map((point: number, index: number) => (
-              <SquarePoint key={index} color={getColorOfPoint(point)} />
-            ))}
-          </div>
-        );
-      })}
+    <div className="container">
+      <div className="App">
+        {screenMatrix.map((row: Array<number>, index: number) => {
+          return (
+            <div className="App__row" key={index}>
+              {row.map((point: number, index: number) => (
+                <SquarePoint key={index} color={getColorOfPoint(point)} />
+              ))}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

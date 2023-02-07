@@ -1,5 +1,17 @@
 :root {
-  --pointSize: 32px;
+  --pointSize: 16px;
+}
+
+.container {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App {
+  margin-top: 100px;
 }
 
 .App__row {
