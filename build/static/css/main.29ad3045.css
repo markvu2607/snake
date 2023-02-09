@@ -1,0 +1,2 @@
+.square-point{height:var(--pointSize);margin-left:1px;margin-top:1px;width:var(--pointSize)}.black{background-color:#000;border:1px solid #fff}.white{background-color:#fff;border:1px solid #000}.red{background-color:red}.green,.red{border:1px solid #fff}.green{background-color:green}:root{--pointSize:32px}.App__row{display:flex}
+/*# sourceMappingURL=main.29ad3045.css.map*/
